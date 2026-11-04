@@ -1,0 +1,117 @@
+# Required Libraries
+import networkx as nx
+import math
+# Input Graph from edge list for the drug ‘Hydroxyurea’
+edges = [
+    (1,2),
+    (2,3), (2,3),
+    (3,4),
+    (4,5),
+    (3,7),
+    (6,7),
+    (7,8),
+    (8,9)
+]
+# RDF values of Hydroxyurea graph
+rdf = {1:0, 2:2, 3:0, 4:2, 5:0, 6:0, 7:2, 8:0, 9:1}
+# Construct MultiGraph
+G = nx.MultiGraph()
+G.add_edges_from(edges)
+# Degree of vertices
+deg = {}
+for v in G.nodes():
+    deg[v] = G.degree(v)
+print("Degrees d(u):", deg)
+# Roman degree
+# Compute x(u) = f(u) + d(u)
+x = {}
+for v in G.nodes():
+    x[v] = rdf[v] + deg[v]
+
+print("x(u) values:", x)
+# Initialize Roman indices
+M1 = M2 = HM = F = 0
+SO = H = IS = SS = 0
+R = RR = SC = 0
+ABC = AZ = GA = SDD = 0
+# Initialize Classical indices (Degree-based indices)
+M1_c = M2_c = HM_c = F_c = 0
+SO_c = H_c = IS_c = SS_c = 0
+R_c = RR_c = SC_c = 0
+ABC_c = AZ_c = GA_c = SDD_c = 0
+# Calculate indices
+for u,v,key in G.edges(keys=True):
+    # ---------------- Roman indices----------------
+    xu = x[u]
+    xv = x[v]
+    M1 += (xu + xv)
+    M2 += (xu * xv)
+    HM += (xu + xv)**2
+    F += (xu**2 + xv**2)
+    SO += math.sqrt(xu**2 + xv**2)
+    H += 2/(xu + xv)
+    IS += (xu*xv)/(xu + xv)
+    SS += math.sqrt((xu*xv)/(xu + xv))
+    R += 1/math.sqrt(xu*xv)
+    RR += math.sqrt(xu*xv)
+    SC += 1/math.sqrt(xu + xv)
+    ABC += math.sqrt((xu + xv - 2)/(xu*xv))
+    AZ += ((xu*xv)/(xu + xv - 2))**3
+    GA += (2*math.sqrt(xu*xv))/(xu + xv)
+    P = min(xu,xv)
+    Q = max(xu,xv)
+    SDD += (P/Q + Q/P)
+    # ---------------- Degree-based indices ----------------
+    du = deg[u]
+    dv = deg[v]
+    M1_c += (du + dv)
+    M2_c += (du * dv)
+    HM_c += (du + dv)**2
+    F_c += (du**2 + dv**2)
+    SO_c += math.sqrt(du**2 + dv**2)
+    H_c += 2/(du + dv)
+    IS_c += (du*dv)/(du + dv)
+    SS_c += math.sqrt((du*dv)/(du + dv))
+    R_c += 1/math.sqrt(du*dv)
+    RR_c += math.sqrt(du*dv)
+    SC_c += 1/math.sqrt(du + dv)
+    ABC_c += math.sqrt((du + dv - 2)/(du*dv))
+    AZ_c += ((du*dv)/(du + dv - 2))**3
+    GA_c += (2*math.sqrt(du*dv))/(du + dv)
+    P = min(du,dv)
+    Q = max(du,dv)
+    SDD_c += (P/Q + Q/P)
+# Print Roman indices
+print("\n Roman Topological Indices")
+print("Roman First Zagreb Index =", M1)
+print("Roman Second Zagreb Index =", M2)
+print("Roman Hyper Zagreb Index =", HM)
+print("Roman Forgotten Index =", F)
+print(f"Roman Sombor Index ={SO:.4f}")
+print(f"Roman Harmonic Index ={H:.4f}")
+print(f"Roman Inverse Sum Index ={IS:.4f}")
+print(f"Roman Shilpa-Shanmukha Index ={SS:.4f}")
+print(f"Roman Randic Index ={R:.4f}")
+print(f"Roman Reciprocal Randic Index ={RR:.4f}")
+print(f"Roman Sum Connectivity Index ={SC:.4f}")
+print(f"Roman ABC Index ={ABC:.4f}")
+print(f"Roman Augmented Zagreb Index ={AZ:.4f}")
+print(f"Roman Geometric Arithmetic Index ={GA:.4f}")
+print(f"Roman Symmetric Division Degree Index ={SDD:.4f}")
+# Print Degree-based indices
+print("\n Degree-Based Indices")
+print("First Zagreb Index =", M1_c)
+print("Second Zagreb Index =", M2_c)
+print("Hyper Zagreb Index =", HM_c)
+print("Forgotten Index =", F_c)
+print(f"Sombor Index ={SO_c:.4f}")
+print(f"Harmonic Index ={H_c:.4f}")
+print(f"Inverse Sum Index ={IS_c:.4f}")
+print(f"Shilpa-Shanmukha Index ={SS_c:.4f}")
+print(f"Randic Index ={R_c:.4f}")
+print(f"Reciprocal Randic Index ={RR_c:.4f}")
+print(f"Sum Connectivity Index ={SC_c:.4f}")
+print(f"ABC Index ={ABC_c:.4f}")
+print(f"Augmented Zagreb Index ={AZ_c:.4f}")
+print(f"Geometric Arithmetic Index ={GA_c:.4f}")
+print(f"Symmetric Division Degree Index ={SDD_c:.4f}")
